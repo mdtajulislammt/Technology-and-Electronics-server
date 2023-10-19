@@ -1,7 +1,7 @@
 const express = require('express');
 const  cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -47,6 +47,40 @@ async function run() {
       res.send(result)
     })
 
+    // get single product using id
+    app.get("/brand/products/:id", async (req, res) =>{
+      const id = req.params.id;
+       const query = {
+        _id: new ObjectId(id),
+       }
+       const result = await brandProductsCollection.findOne(query);
+       res.send(result);
+    })
+
+    // update product 
+    app.put("/brand/products/:id",async(req,res)=>{
+      const id = req.params.id;
+      const data = req.body;
+      const options = {upset: true};
+      const filter = {
+        _id: new ObjectId(id),
+       }
+      const updateProduct = {
+        $set:{
+          name:data.name,
+          brandname:data.brandname,
+          type:data.type,
+          price:data.price,
+          description:data.description,
+          rating:data.rating,
+          img:data.img,
+        }
+      }
+      const result = await brandProductsCollection.updateOne(filter,updateProduct,options);
+      res.send(result);
+    })
+
+
 
 
     //Add data singal post 
@@ -68,6 +102,16 @@ async function run() {
       const myCart = myCartCollection.find();
       const result = await myCart.toArray();
       res.send(result)
+    })
+
+    // delete myCart 
+    app.delete("/myCarts/:id", async (req, res) =>{
+      const id = req.params.id;
+       const query = {
+        _id: new ObjectId(id),
+       }
+       const result = await myCartCollection.deleteOne(query);
+       res.send(result);
     })
 
     // Send a ping to confirm a successful connection
