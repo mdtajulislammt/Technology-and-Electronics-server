@@ -31,6 +31,7 @@ async function run() {
     await client.connect();
     const brandCollection = client.db("brandDB").collection("brand")
     const brandProductsCollection = client.db("brandProductsDB").collection("brandProducts")
+    const myCartCollection = client.db("myCartsDB").collection("myCarts")
 
     //brand read
     app.get('/brand',async(req,res)=>{
@@ -43,6 +44,21 @@ async function run() {
     app.get('/brand/products',async(req,res)=>{
       const products = brandProductsCollection.find();
       const result = await products.toArray();
+      res.send(result)
+    })
+
+    //myCart data singal 
+    app.post("/myCarts",async(req,res)=>{
+      const myCart = req.body;
+      console.log("user", myCart);
+      const result = await myCartCollection.insertOne(myCart)
+      console.log(result);
+      res.send(result)
+    })
+
+    app.get('/myCarts', async (req, res) =>{
+      const myCart = brandProductsCollection.find();
+      const result = await myCart.toArray();
       res.send(result)
     })
 
