@@ -47,17 +47,25 @@ async function run() {
       res.send(result)
     })
 
+
+
+    //Add data singal post 
+    app.post("/brand/products",async(req,res)=>{
+      const addProduct = req.body;
+      const result = await brandProductsCollection.insertOne(addProduct)
+      res.send(result)
+    })
+    
+
     //myCart data singal 
     app.post("/myCarts",async(req,res)=>{
-      const myCart = req.body;
-      console.log("user", myCart);
-      const result = await myCartCollection.insertOne(myCart)
-      console.log(result);
+      const myCarts = req.body;
+      const result = await myCartCollection.insertOne(myCarts)
       res.send(result)
     })
 
     app.get('/myCarts', async (req, res) =>{
-      const myCart = brandProductsCollection.find();
+      const myCart = myCartCollection.find();
       const result = await myCart.toArray();
       res.send(result)
     })
