@@ -30,9 +30,16 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const brandCollection = client.db("brandDB").collection("brand")
+    const sellProductsCollection = client.db("sellItemsDB").collection("sellItems")
     const brandProductsCollection = client.db("brandProductsDB").collection("brandProducts")
     const myCartCollection = client.db("myCartsDB").collection("myCarts")
 
+    //Sell Products  read
+    app.get('/sellItems',async(req,res)=>{
+      const sell = sellProductsCollection.find()
+      const result = await sell.toArray();
+      res.send(result)
+    })
     //brand read
     app.get('/brand',async(req,res)=>{
       const brand = brandCollection.find()
@@ -86,7 +93,9 @@ async function run() {
     //Add data singal post 
     app.post("/brand/products",async(req,res)=>{
       const addProduct = req.body;
+      console.log(addProduct);
       const result = await brandProductsCollection.insertOne(addProduct)
+      console.log(result);
       res.send(result)
     })
     
@@ -94,7 +103,9 @@ async function run() {
     //myCart data singal 
     app.post("/myCarts",async(req,res)=>{
       const myCarts = req.body;
+      console.log(myCarts);
       const result = await myCartCollection.insertOne(myCarts)
+      console.log(result);
       res.send(result)
     })
 
